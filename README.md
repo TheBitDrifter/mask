@@ -14,11 +14,10 @@ The mask package provides utilities for managing bitmasks in Go, including funct
 
 The package supports different configurations using Go build tags:
 
-- Default (64-bit): Builds with a MaxBits value of 64.
-- 256-bit: Use the m256 build tag to build with a MaxBits value of 256.
-- 512-bit or 1024-bit: Additional configurations can be added for larger masks by setting the MaxBits value accordingly.
-
-To use a specific configuration, specify the build tag when running or testing:
+- Default (64-bits)
+- m256 (256-bits)
+- m512 (512 bits)
+- m1024 (1024 bits)
 
 ```zsh
 go test -tags m256
@@ -39,7 +38,6 @@ To set a specific bit in the mask:
 ```go
 var m mask.Mask
 m.Mark(3) // Sets the 3rd bit
-Check if a Bit is Set
 ```
 
 To check if a specific bit is set:
@@ -48,7 +46,6 @@ To check if a specific bit is set:
 if m.Contains(3) {
     fmt.Println("Bit 3 is set!")
 }
-
 ```
 
 ### Compare Bitmasks
@@ -86,12 +83,7 @@ Check for an Empty Mask
 To check if a mask is empty (i.e., no bits are set):
 
 ```go
-Copy code
 if mask.isEmpty(m) {
     fmt.Println("Mask is empty.")
 }
 ```
-
-## License
-This project is licensed under the MIT License. See the LICENSE file for more details.
-
