@@ -54,3 +54,9 @@ func (m Mask) IsEmpty() bool {
 	}
 	return true
 }
+
+func (m *Mask) Unmark(bit uint32) {
+	idx := bit / bitSize
+	bitPosition := bit % bitSize
+	m[idx] &^= (1 << bitPosition) // &^ is AND NOT
+}

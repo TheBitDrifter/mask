@@ -8,11 +8,11 @@ import (
 
 func TestMask(t *testing.T) {
 	var maxBit uint32 = mask.MaxBits - 1
-
 	tests := []struct {
 		name      string
 		initial   mask.Mask
 		toMark    []uint32
+		toUnmark  []uint32
 		checkAll  mask.Mask
 		checkAny  mask.Mask
 		checkNone mask.Mask
@@ -70,13 +70,45 @@ func TestMask(t *testing.T) {
 				32:     false,
 			},
 		},
+		{
+			name:     "Unmark middle bit",
+			initial:  mask.Mask{},
+			toMark:   []uint32{0, 1, 2},
+			toUnmark: []uint32{1},
+			checkAll: func() mask.Mask {
+				var m mask.Mask
+				m.Mark(0)
+				m.Mark(2)
+				return m
+			}(),
+			checkAny: func() mask.Mask {
+				var m mask.Mask
+				m.Mark(1)
+				return m
+			}(),
+			checkNone: func() mask.Mask {
+				var m mask.Mask
+				m.Mark(1)
+				return m
+			}(),
+			wantAll:  true,
+			wantAny:  false,
+			wantNone: true,
+			getBits: map[uint32]bool{
+				0: true,
+				1: false,
+				2: true,
+			},
+		},
 	}
-
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			m := tt.initial
 			for _, bit := range tt.toMark {
 				m.Mark(bit)
+			}
+			for _, bit := range tt.toUnmark {
+				m.Unmark(bit)
 			}
 			if got := m.ContainsAll(tt.checkAll); got != tt.wantAll {
 				t.Errorf("Mask.IncludesAll() = %v, expected %v", got, tt.wantAll)
