@@ -19,6 +19,10 @@ The package supports different configurations using Go build tags:
 - m512 (512 bits)
 - m1024 (1024 bits)
 
+## Mask 256
+
+The package contains a fixed `Mask256{}` type, regardless of build tags.
+
 ```zsh
 go test -tags m256
 ```

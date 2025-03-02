@@ -1,25 +1,27 @@
 package mask
 
-// bitSize represents the number of bits in a uint64
-const bitSize = 64
+// Mask256 represents a 256-element bit mask using an array of uint64
+type (
+	Mask256 [256]uint64
+)
 
 // Mark sets the specified bit in the mask
-func (m *Mask) Mark(bit uint32) {
+func (m *Mask256) Mark(bit uint32) {
 	idx := bit / bitSize
 	bitPosition := bit % bitSize
 	m[idx] |= (1 << bitPosition)
 }
 
 // Contains checks if the specified bit is set in the mask
-func (m Mask) Contains(bit uint32) bool {
+func (m Mask256) Contains(bit uint32) bool {
 	idx := bit / bitSize
 	offset := bit - (bitSize * idx)
 	mask := uint64(1 << offset)
 	return m[idx]&mask == mask
 }
 
-// ContainsAll checks if all bits set in the other mask are also set in this mask
-func (m Mask) ContainsAll(other Mask) bool {
+// ContainsAll returns true if this mask contains all bits set in the other mask
+func (m Mask256) ContainsAll(other Mask256) bool {
 	for i, v := range other {
 		if m[i]&v != v {
 			return false
@@ -28,8 +30,8 @@ func (m Mask) ContainsAll(other Mask) bool {
 	return true
 }
 
-// ContainsAny checks if any bit set in the other mask is also set in this mask
-func (m Mask) ContainsAny(other Mask) bool {
+// ContainsAny returns true if this mask contains any bits set in the other mask
+func (m Mask256) ContainsAny(other Mask256) bool {
 	for i, v := range other {
 		if m[i]&v != 0 {
 			return true
@@ -38,9 +40,8 @@ func (m Mask) ContainsAny(other Mask) bool {
 	return false
 }
 
-// ContainsNone checks if none of the bits set in the other mask are set in this mask
-// Returns false if the other mask is empty
-func (m Mask) ContainsNone(other Mask) bool {
+// ContainsNone returns true if this mask contains none of the bits set in the other mask
+func (m Mask256) ContainsNone(other Mask256) bool {
 	if other.IsEmpty() {
 		return false
 	}
@@ -52,8 +53,8 @@ func (m Mask) ContainsNone(other Mask) bool {
 	return true
 }
 
-// IsEmpty checks if the mask has no bits set
-func (m Mask) IsEmpty() bool {
+// IsEmpty returns true if no bits are set in this mask
+func (m Mask256) IsEmpty() bool {
 	for _, v := range m {
 		if v != 0 {
 			return false
@@ -63,7 +64,7 @@ func (m Mask) IsEmpty() bool {
 }
 
 // Unmark clears the specified bit in the mask
-func (m *Mask) Unmark(bit uint32) {
+func (m *Mask256) Unmark(bit uint32) {
 	idx := bit / bitSize
 	bitPosition := bit % bitSize
 	m[idx] &^= (1 << bitPosition) // &^ is AND NOT
